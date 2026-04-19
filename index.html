@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giải Phương Trình Bậc 2</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #06b6d4 0%, #6366f1 45%, #ec4899 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .hero-glow {
+      position: fixed;
+      inset: auto auto 10% 50%;
+      width: 52rem;
+      height: 52rem;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0));
+      filter: blur(20px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .duck-track {
+      position: fixed;
+      bottom: 1.2rem;
+      left: -160px;
+      z-index: 30;
+      animation: duck-walk 14s linear infinite;
+      pointer-events: none;
+    }
+
+    .duck {
+      width: 110px;
+      height: 64px;
+      position: relative;
+      animation: duck-bob 0.7s ease-in-out infinite alternate;
+    }
+
+    .duck-body {
+      position: absolute;
+      width: 70px;
+      height: 44px;
+      background: #facc15;
+      border-radius: 999px;
+      top: 18px;
+      left: 20px;
+      box-shadow: inset -8px -7px 0 rgba(250, 204, 21, 0.55);
+    }
+
+    .duck-head {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #fde047;
+      border-radius: 50%;
+      top: 10px;
+      left: 65px;
+    }
+
+    .duck-eye {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #111827;
+      border-radius: 50%;
+      top: 12px;
+      left: 18px;
+    }
+
+    .duck-beak {
+      position: absolute;
+      width: 12px;
+      height: 8px;
+      background: #fb923c;
+      border-radius: 0 6px 6px 0;
+      top: 16px;
+      left: 27px;
+    }
+
+    .duck-wing {
+      position: absolute;
+      width: 22px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(234, 179, 8, 0.8);
+      top: 14px;
+      left: 18px;
+      transform-origin: left center;
+      animation: duck-wing 0.55s ease-in-out infinite alternate;
+    }
+
+    .duck-foot {
+      position: absolute;
+      width: 14px;
+      height: 5px;
+      border-radius: 999px;
+      background: #fb923c;
+      bottom: -2px;
+    }
+
+    .duck-foot.left {
+      left: 28px;
+      animation: foot-step 0.35s ease-in-out infinite alternate;
+    }
+
+    .duck-foot.right {
+      left: 50px;
+      animation: foot-step 0.35s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes duck-walk {
+      0% {
+        transform: translateX(0) scaleX(1);
+      }
+      47% {
+        transform: translateX(calc(100vw + 220px)) scaleX(1);
+      }
+      50% {
+        transform: translateX(calc(100vw + 220px)) scaleX(-1);
+      }
+      97% {
+        transform: translateX(0) scaleX(-1);
+      }
+      100% {
+        transform: translateX(0) scaleX(1);
+      }
+    }
+
+    @keyframes duck-bob {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(-5px);
+      }
+    }
+
+    @keyframes duck-wing {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(-12deg);
+      }
+    }
+
+    @keyframes foot-step {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(-2px);
+      }
+    }
+
+    .fade-in {
+      animation: fade-up 0.55s ease both;
+    }
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="text-white selection:bg-amber-300 selection:text-slate-900">
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <main class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+    <section class="w-full max-w-4xl bg-white/14 backdrop-blur-md border border-white/30 rounded-3xl p-6 md:p-10 shadow-2xl shadow-indigo-950/30">
+      <h1 class="text-3xl md:text-5xl font-black tracking-tight text-center text-amber-200">Giải Phương Trình Bậc 2</h1>
+      <p class="mt-3 text-center text-indigo-100/95">Nhập a, b, c cho phương trình ax² + bx + c = 0 và xem từng bước giải chi tiết.</p>
+
+      <form id="solverForm" class="mt-8 grid gap-4 md:grid-cols-4 items-end">
+        <label class="block">
+          <span class="font-semibold text-amber-100">Hệ số a</span>
+          <input id="a" type="number" step="any" value="1" class="mt-1 w-full rounded-xl border border-white/35 bg-white/90 text-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-amber-300" required>
+        </label>
+        <label class="block">
+          <span class="font-semibold text-amber-100">Hệ số b</span>
+          <input id="b" type="number" step="any" value="-3" class="mt-1 w-full rounded-xl border border-white/35 bg-white/90 text-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-amber-300" required>
+        </label>
+        <label class="block">
+          <span class="font-semibold text-amber-100">Hệ số c</span>
+          <input id="c" type="number" step="any" value="2" class="mt-1 w-full rounded-xl border border-white/35 bg-white/90 text-slate-900 p-3 focus:outline-none focus:ring-2 focus:ring-amber-300" required>
+        </label>
+        <button type="submit" class="h-12 rounded-xl bg-amber-300 text-slate-900 font-bold hover:bg-amber-200 transition">Giải ngay</button>
+      </form>
+
+      <div id="result" class="mt-8 space-y-3"></div>
+    </section>
+  </main>
+
+  <div class="duck-track" aria-hidden="true">
+    <div class="duck">
+      <div class="duck-body">
+        <div class="duck-wing"></div>
+      </div>
+      <div class="duck-head">
+        <div class="duck-eye"></div>
+        <div class="duck-beak"></div>
+      </div>
+      <div class="duck-foot left"></div>
+      <div class="duck-foot right"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('solverForm');
+    const result = document.getElementById('result');
+
+    function fmt(num) {
+      if (!Number.isFinite(num)) return String(num);
+      if (Math.abs(num) < 1e-10) return '0';
+      const rounded = Number(num.toFixed(8));
+      return rounded.toString();
+    }
+
+    function addLine(content, strong) {
+      const line = document.createElement('p');
+      line.className = 'fade-in text-indigo-50 text-lg';
+      line.innerHTML = strong ? `<strong class="text-amber-200">${content}</strong>` : content;
+      result.appendChild(line);
+    }
+
+    function solveQuadratic(a, b, c) {
+      result.innerHTML = '';
+
+      addLine(`Phương trình: ${fmt(a)}x<sup>2</sup> + ${fmt(b)}x + ${fmt(c)} = 0`, true);
+
+      if (Math.abs(a) < 1e-12) {
+        addLine('Do a = 0 nên đây không phải phương trình bậc 2. Chuyển về phương trình bậc nhất bx + c = 0.');
+
+        if (Math.abs(b) < 1e-12) {
+          if (Math.abs(c) < 1e-12) {
+            addLine('b = 0 và c = 0 nên phương trình có vô số nghiệm.', true);
+          } else {
+            addLine('b = 0 và c != 0 nên phương trình vô nghiệm.', true);
+          }
+          return;
+        }
+
+        const x = -c / b;
+        addLine(`Bước 1: x = -c / b = -(${fmt(c)}) / ${fmt(b)} = ${fmt(x)}`);
+        addLine(`Kết luận: phương trình có 1 nghiệm x = ${fmt(x)}`, true);
+        return;
+      }
+
+      const delta = b * b - 4 * a * c;
+      addLine(`Bước 1: Tính biệt thức delta = b<sup>2</sup> - 4ac`);
+      addLine(`delta = (${fmt(b)})<sup>2</sup> - 4 x ${fmt(a)} x ${fmt(c)} = ${fmt(delta)}`);
+
+      if (delta < 0) {
+        addLine('Bước 2: delta < 0 nên phương trình vô nghiệm (trong tập số thực).');
+        addLine('Kết luận: phương trình vô nghiệm.', true);
+        return;
+      }
+
+      if (Math.abs(delta) < 1e-12) {
+        const x = -b / (2 * a);
+        addLine('Bước 2: delta = 0 nên phương trình có nghiệm kép.');
+        addLine(`x = -b / (2a) = -(${fmt(b)}) / (2 x ${fmt(a)}) = ${fmt(x)}`);
+        addLine(`Kết luận: phương trình có nghiệm kép x1 = x2 = ${fmt(x)}`, true);
+        return;
+      }
+
+      const sqrtDelta = Math.sqrt(delta);
+      const x1 = (-b + sqrtDelta) / (2 * a);
+      const x2 = (-b - sqrtDelta) / (2 * a);
+      addLine('Bước 2: delta > 0 nên phương trình có 2 nghiệm phân biệt.');
+      addLine(`sqrt(delta) = sqrt(${fmt(delta)}) = ${fmt(sqrtDelta)}`);
+      addLine(`x1 = (-b + sqrt(delta)) / (2a) = (${fmt(-b)} + ${fmt(sqrtDelta)}) / (2 x ${fmt(a)}) = ${fmt(x1)}`);
+      addLine(`x2 = (-b - sqrt(delta)) / (2a) = (${fmt(-b)} - ${fmt(sqrtDelta)}) / (2 x ${fmt(a)}) = ${fmt(x2)}`);
+      addLine(`Kết luận: phương trình có 2 nghiệm x1 = ${fmt(x1)}, x2 = ${fmt(x2)}`, true);
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const a = parseFloat(document.getElementById('a').value);
+      const b = parseFloat(document.getElementById('b').value);
+      const c = parseFloat(document.getElementById('c').value);
+
+      if ([a, b, c].some((n) => Number.isNaN(n))) {
+        result.innerHTML = '<p class="text-rose-200 font-semibold">Vui lòng nhập đầy đủ các hệ số hợp lệ.</p>';
+        return;
+      }
+
+      solveQuadratic(a, b, c);
+    });
+
+    solveQuadratic(1, -3, 2);
+  </script>
+</body>
+</html>
